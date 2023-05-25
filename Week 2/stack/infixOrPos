@@ -1,0 +1,119 @@
+// function isValid(str){
+//     let stack=[];
+//     for(let i =0 ;i<str.length; i++){
+//         if(str[i] === "{"){
+//             stack.push("{")
+//         }else if(str[i] === "["){
+//             stack.push("[")
+//         }else if(str[i] === "("){
+//             stack.push("(")
+//         }else if(stack.length === 0 || 
+//                  (str[i] === "}" && stack[stack.length-1] === "{") ||
+//                  (str[i] === "]" && stack[stack.length-1] === "[") ||
+//                  (str[i] === ")" && stack[stack.length-1] === "(")){
+//             stack.pop();
+//             return false;
+
+//         }else{
+//             return true;
+
+//         }
+//     }
+//     return stack.length === 0;
+// }
+// console.log(isValid("{({)}}}")); // false
+
+function infixToPostfix(expression) {
+    let operatorStack = [];
+    let postfix = "";
+    
+    // Define precedence of operators
+    let precedence = {
+      "^": 3,
+      "*": 2,
+      "/": 2,
+      "+": 1,
+      "-": 1
+    };
+    
+    for (let i = 0; i < expression.length; i++) {
+      let char = expression[i];
+      
+      // Check if character is an operand
+      if (/[a-zA-Z0-9]/.test(char)) {
+        postfix += char;
+      }
+      // Check if character is an operator
+      else if (/[+\-*/^]/.test(char)) {
+        while (operatorStack.length > 0 && 
+               precedence[operatorStack[operatorStack.length - 1]] >= precedence[char]) {
+          postfix += operatorStack.pop();
+        }
+        operatorStack.push(char);
+      }
+      // Check if character is a left parenthesis
+      else if (char === "(") {
+        operatorStack.push(char);
+      }
+      // Check if character is a right parenthesis
+      else if (char === ")") {
+        while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== "(") {
+          postfix += operatorStack.pop();
+        }
+        operatorStack.pop(); // Discard the left parenthesis
+      }
+    }
+    
+    // Pop the remaining operators in the stack
+    while (operatorStack.length > 0) {
+      postfix += operatorStack.pop();
+    }
+    
+    return postfix;
+  }
+  
+  // Example usage:
+//   console.log(infixToPostfix("a+b*c-d/e")); // Output: abc*+de/-
+function postfixEvaluation(expression) {
+    let operandStack = [];
+    
+    for (let i = 0; i < expression.length; i++) {
+      let char = expression[i];
+      
+      // Check if character is an operand
+      if (/[a-zA-Z0-9]/.test(char)) {
+        operandStack.push(Number(char));
+      }
+      // Check if character is an operator
+      else if (/[+\-*/^]/.test(char)) {
+        let operand2 = operandStack.pop();
+        let operand1 = operandStack.pop();
+        let result = evaluate(char, operand1, operand2);
+        operandStack.push(result);
+      }
+    }
+    
+    return operandStack.pop();
+  }
+  
+  // Helper function to evaluate two operands with an operator
+  function evaluate(operator, operand1, operand2) {
+    switch (operator) {
+      case "+":
+        return operand1 + operand2;
+      case "-":
+        return operand1 - operand2;
+      case "*":
+        return operand1 * operand2;
+      case "/":
+        return operand1 / operand2;
+      case "^":
+        return Math.pow(operand1, operand2);
+    }
+  }
+  
+  // Example usage:
+  console.log(postfixEvaluation("23+4*")); // Output: 14
+  
+  
+  
