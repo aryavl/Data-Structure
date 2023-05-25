@@ -166,3 +166,5 @@ console.log(trie.checkPrefix("h"))
 // console.log(trie.findPrefixes("h"));
 trie.dfsTraversal();
 console.log(trie.getAllWords());
+
+// find the largest prefix in a trie
